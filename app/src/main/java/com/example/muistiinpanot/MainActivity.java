@@ -51,8 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        // ParseJSON(response);
+
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -69,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void PoistaMuistiinpanoPaikallisesti(Muistiinpano m)
     {
+        LinearLayout l = findViewById(R.id.scrollLayout);
+        l.removeView(m.getTextView());
         muistiinpanot.remove(m);
     }
 
@@ -104,15 +105,36 @@ public class MainActivity extends AppCompatActivity {
         StringRequest MyStringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                //This code is executed if the server responds, whether or not the response contains data.
                 Log.i("response: ", response);
-                m.setId("1");
-                //The String 'response' contains the server's response.
+
+                try {
+                    JSONObject jsonData = new JSONObject(response);
+                    JSONArray jsonAr = jsonData.getJSONArray("muistiinpanot");
+
+                    for (int i = 0; i < jsonAr.length(); i++)
+                    {
+                        JSONObject c = jsonAr.getJSONObject(i);
+                        // Muistiinpano m = new Muistiinpano(c.getString("id"), c.getString("omistaja"), c.getString("otsikko"), c.getString("data"), c.getString("lisatty"), c.getString("token"));
+                        // muistiinpanot.add(m);
+                        // LuoTextView(m);
+                        m.setId(c.getString("id"));
+                        m.setOmistaja(c.getString("omistaja"));
+                        m.setLuontipaiva(c.getString("lisatty"));
+                        m.setToken(c.getString("token"));
+                        Log.i("Haloo", "Haloo");
+                    }
+
+                }
+                catch(Exception e)
+                {
+                    Log.e("Error: ", e.toString());
+                }
+
+                // m.setId("1");
             }
         }, new Response.ErrorListener() { //Create an error listener to handle errors appropriately.
             @Override
             public void onErrorResponse(VolleyError error) {
-                //This code is executed if there is an error.
                 Log.e("Error: ", error.toString());
             }
         }) {
@@ -187,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, e.toString(), Toast.LENGTH_LONG).show();
         }
     }
+
 
     public void haeMuistiinpanotPalvelimelta (View v)
     {

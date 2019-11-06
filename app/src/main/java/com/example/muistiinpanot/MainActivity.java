@@ -39,6 +39,39 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void PoistaMuistiinpanoPalvelimelta(Muistiinpano m)
+    {
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String userToken = "3c469e9d6c5875d37a43f353d4f88e61fcf812c66eee3457465a40b0da4153e0";
+        String muistiinpanoId = m.getId();
+
+        String url ="https://palikka.org/muistiinpano/testi.php?usertoken=" + userToken + "&poista=" + muistiinpanoId;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        // ParseJSON(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+// Add the request to the RequestQueue.
+        queue.add(stringRequest);
+
+        // PoistaMuistiinpanoPaikallisesti(m);
+    }
+
+    public void PoistaMuistiinpanoPaikallisesti(Muistiinpano m)
+    {
+        muistiinpanot.remove(m);
+    }
+
     public void HaeDataUrlista()
     {
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -144,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 JSONObject c = jsonAr.getJSONObject(i);
                 Muistiinpano m = new Muistiinpano(c.getString("id"), c.getString("omistaja"), c.getString("otsikko"), c.getString("data"), c.getString("lisatty"), c.getString("token"));
+                muistiinpanot.add(m);
                 LuoTextView(m);
             }
 
@@ -159,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Haetaan muistiinpanoja palvelimelta..", Toast.LENGTH_LONG).show();
         LinearLayout l = findViewById(R.id.scrollLayout);
         l.removeAllViews();
+        muistiinpanot.clear();
         HaeDataUrlista();
     }
 

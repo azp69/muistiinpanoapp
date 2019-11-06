@@ -40,6 +40,20 @@ public class DialogNaytaMuistiinpano extends DialogFragment {
             }
         });
 
+        Button poistaBtn = (Button) dialogView.findViewById(R.id.poistaBtn);
+
+        poistaBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity act = (MainActivity) getActivity();
+
+                act.PoistaMuistiinpanoPalvelimelta(m);
+                act.PoistaMuistiinpanoPaikallisesti(m);
+                dismiss();
+            }
+        });
+
+
         Button tallennaBtn = (Button) dialogView.findViewById(R.id.tallennaBtn);
 
         tallennaBtn.setOnClickListener(new View.OnClickListener()

@@ -1,6 +1,8 @@
 package com.example.muistiinpanot;
 
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.widget.TextView;
 
 public class Muistiinpano {
@@ -46,7 +48,14 @@ public class Muistiinpano {
 
     public void paivitaTextView()
     {
-        this.textView.setText(Html.fromHtml("<b>" + this.getOtsikko() + "</b><br />\n" + this.getData()));
+        String teksti = this.getOtsikko() + "\n" + this.getData();
+        SpannableStringBuilder str = new SpannableStringBuilder(teksti);
+        str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, this.getOtsikko().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        this.textView.setText(str);
+        // tv.setText(str);
+
+        // this.textView.setText(Html.fromHtml("<b>" + this.getOtsikko() + "</b><br />\n" + this.getData()));
     }
 
 }

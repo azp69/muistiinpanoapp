@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.print.PrintAttributes;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
@@ -192,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
         t.setMuistiinpano(m);
         m.setTextView(t);
 
+
         t.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -213,7 +215,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        t.setTextSize(20f);
+        t.setTextSize(16f);
+        t.setTextColor(getResources().getColor(R.color.colorText));
+        t.setPadding(0,30,0,30);
 
         m.paivitaTextView();
 
@@ -255,6 +259,7 @@ public class MainActivity extends AppCompatActivity {
     public void uusiMuistiinpano(View v)
     {
         DialogNaytaMuistiinpano dialog = new DialogNaytaMuistiinpano();
+
         Muistiinpano m = new Muistiinpano("", "", "Otsikko", "", "" , "");
 
         dialog.setMuistiinpano(m);

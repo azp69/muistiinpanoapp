@@ -1,6 +1,7 @@
 package com.example.muistiinpanot;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -29,6 +30,53 @@ public class DialogNaytaMuistiinpano extends DialogFragment {
         final TextView otsikkoText = (TextView) dialogView.findViewById(R.id.otsikkoText);
         final TextView dataText = (TextView) dialogView.findViewById(R.id.dataText);
 
+        builder.setPositiveButton("Tallenna", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                m.setData(dataText.getText().toString());
+                m.setOtsikko(otsikkoText.getText().toString());
+
+                if (t == null) // Uusi muistiinpano
+                {
+                    MainActivity callingActivity = (MainActivity) getActivity();
+
+                    callingActivity.LuoTextView(m);
+                    m.paivitaTextView();
+                    callingActivity.LisaaMuistiinpanoPalvelimelle(m);
+
+                }
+                else // Vanhan muokkaus
+                {
+                    Log.i("Joo", "Vanhan muokkaus.");
+                    MainActivity callingActivity = (MainActivity) getActivity();
+                    callingActivity.PaivitaMuistiinpanoPalvelimelle(m);
+                    m.paivitaTextView();
+                }
+
+                dismiss();
+            }
+        });
+
+        builder.setNegativeButton("Peruuta", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dismiss();
+            }
+        });
+
+        builder.setNeutralButton("Poista", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                MainActivity act = (MainActivity) getActivity();
+                act.PoistaMuistiinpanoPalvelimelta(m);
+                act.PoistaMuistiinpanoPaikallisesti(m);
+                dismiss();
+            }
+        });
+
+
+
+        /*
         Button peruutaBtn = (Button) dialogView.findViewById(R.id.peruutaBtn);
 
         peruutaBtn.setOnClickListener(new View.OnClickListener()
@@ -84,6 +132,9 @@ public class DialogNaytaMuistiinpano extends DialogFragment {
                 dismiss();
             }
         });
+
+
+        */
 
         builder.setView(dialogView).setMessage("Muistiinpano");
 

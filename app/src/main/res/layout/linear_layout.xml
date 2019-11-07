@@ -8,27 +8,26 @@
     android:orientation="vertical">
 
     <LinearLayout
+        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:orientation="horizontal">
 
         <Button
+            style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@color/colorPrimary"
             android:onClick="haeMuistiinpanotPalvelimelta"
             android:text="Päivitä" />
 
         <Button
+            style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:backgroundTint="@color/colorPrimary"
-            android:backgroundTintMode="src_in"
             android:onClick="uusiMuistiinpano"
             android:text="Uusi" />
     </LinearLayout>
@@ -42,10 +41,13 @@
 
         <LinearLayout
             android:id="@+id/scrollLayout"
+            android:divider="?android:dividerHorizontal"
+            android:showDividers="middle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
             android:orientation="vertical" />
+
     </ScrollView>
 
 </LinearLayout>

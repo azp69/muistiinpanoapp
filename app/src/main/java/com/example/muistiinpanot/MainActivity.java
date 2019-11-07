@@ -2,6 +2,7 @@ package com.example.muistiinpanot;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -34,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         muistiinpanot = new ArrayList<Muistiinpano>();
 
-        // setContentView(R.layout.activity_main);
         setContentView(R.layout.linear_layout);
 
     }
@@ -60,10 +60,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-// Add the request to the RequestQueue.
         queue.add(stringRequest);
-
-        // PoistaMuistiinpanoPaikallisesti(m);
     }
 
     public void PoistaMuistiinpanoPaikallisesti(Muistiinpano m)
@@ -83,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
                         ParseJSON(response);
                     }
                 }, new Response.ErrorListener() {
@@ -93,20 +89,63 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-// Add the request to the RequestQueue.
         queue.add(stringRequest);
+    }
+
+    public void PaivitaMuistiinpanoPalvelimelle(final Muistiinpano m){
+        final String userToken = "3c469e9d6c5875d37a43f353d4f88e61fcf812c66eee3457465a40b0da4153e0";
+        RequestQueue MyRequestQueue = Volley.newRequestQueue(this);
+        String url = "https://palikka.org/muistiinpano/testi.php";
+        StringRequest MyStringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonData = new JSONObject(response);
+                    JSONArray jsonAr = jsonData.getJSONArray("muistiinpanot");
+                    for (int i = 0; i < jsonAr.length(); i++)
+                    {
+                        JSONObject c = jsonAr.getJSONObject(i);
+                        m.setId(c.getString("id"));
+                        m.setOmistaja(c.getString("omistaja"));
+                        m.setLuontipaiva(c.getString("lisatty"));
+                        m.setToken(c.getString("token"));
+                    }
+                }
+                catch(Exception e)
+                {
+                    Log.e("Error: ", e.toString());
+                    Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+        }, new Response.ErrorListener() { //Create an error listener to handle errors appropriately.
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Error: ", error.toString());
+                Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+            }
+        }) {
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("usertoken", userToken);
+                params.put("id", m.getId());
+                params.put("otsikko", m.getOtsikko().toString());
+                params.put("data", m.getData().toString());
+                params.put("paivita", "1");
+                return params;
+            }
+        };
+
+        MyRequestQueue.add(MyStringRequest);
     }
 
     public void LisaaMuistiinpanoPalvelimelle(final Muistiinpano m){
         final String userToken = "3c469e9d6c5875d37a43f353d4f88e61fcf812c66eee3457465a40b0da4153e0";
 
         RequestQueue MyRequestQueue = Volley.newRequestQueue(this);
-        String url = "https://palikka.org/muistiinpano/testi.php"; // <----enter your post url here
+        String url = "https://palikka.org/muistiinpano/testi.php";
         StringRequest MyStringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.i("response: ", response);
-
                 try {
                     JSONObject jsonData = new JSONObject(response);
                     JSONArray jsonAr = jsonData.getJSONArray("muistiinpanot");
@@ -114,28 +153,24 @@ public class MainActivity extends AppCompatActivity {
                     for (int i = 0; i < jsonAr.length(); i++)
                     {
                         JSONObject c = jsonAr.getJSONObject(i);
-                        // Muistiinpano m = new Muistiinpano(c.getString("id"), c.getString("omistaja"), c.getString("otsikko"), c.getString("data"), c.getString("lisatty"), c.getString("token"));
-                        // muistiinpanot.add(m);
-                        // LuoTextView(m);
                         m.setId(c.getString("id"));
                         m.setOmistaja(c.getString("omistaja"));
                         m.setLuontipaiva(c.getString("lisatty"));
                         m.setToken(c.getString("token"));
-                        Log.i("Haloo", "Haloo");
                     }
 
                 }
                 catch(Exception e)
                 {
                     Log.e("Error: ", e.toString());
+                    Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
                 }
-
-                // m.setId("1");
             }
         }, new Response.ErrorListener() { //Create an error listener to handle errors appropriately.
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("Error: ", error.toString());
+                Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_LONG).show();
             }
         }) {
             protected Map<String, String> getParams() {
@@ -169,24 +204,21 @@ public class MainActivity extends AppCompatActivity {
                 // Toast.makeText(MainActivity.this, viesti, Toast.LENGTH_LONG).show();
 
                 DialogNaytaMuistiinpano dialog = new DialogNaytaMuistiinpano();
-                Muistiinpano m = new Muistiinpano("1", "1", "Otsikko", "Data", "1" , "token");
+                Muistiinpano m = new Muistiinpano("", "", "", "", "" , "");
                 m.setTextView(t);
                 dialog.setMuistiinpano(((TextViewE) v).getMuistiinpano());
                 dialog.setTextView(t);
 
                 dialog.show(getSupportFragmentManager(), "");
-                // Log.i("juu", "täällä");
             }
         });
 
         t.setTextSize(20f);
 
-        // t.setText(Html.fromHtml("<b>" + m.getOtsikko() + "</b><br />\n" + m.getData()));
         m.paivitaTextView();
 
         LinearLayout l = findViewById(R.id.scrollLayout);
         l.addView(t);
-        // return t;
     }
 
     public void ParseJSON(String data)
@@ -222,7 +254,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void uusiMuistiinpano(View v)
     {
-        // setContentView(R.layout.muistiinpano);
         DialogNaytaMuistiinpano dialog = new DialogNaytaMuistiinpano();
         Muistiinpano m = new Muistiinpano("", "", "Otsikko", "", "" , "");
 

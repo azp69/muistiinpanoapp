@@ -75,6 +75,9 @@ public class DialogNaytaMuistiinpano extends DialogFragment {
                 }
                 else // Vanhan muokkaus
                 {
+                    Log.i("Joo", "Vanhan muokkaus.");
+                    MainActivity callingActivity = (MainActivity) getActivity();
+                    callingActivity.PaivitaMuistiinpanoPalvelimelle(m);
                     m.paivitaTextView();
                 }
 
